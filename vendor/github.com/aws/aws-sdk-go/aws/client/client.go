@@ -107,6 +107,10 @@ func logRequest(r *request.Request) {
 	if err != nil {
 		r.Config.Logger.Log(fmt.Sprintf(logReqErrMsg, r.ClientInfo.ServiceName, r.Operation.Name, err))
 		r.Error = awserr.New(request.ErrCodeRead, "an error occurred during request body reading", err)
+
+		body, _ := httputil.DumpRequest(r.HTTPRequest, logBody)
+		r.Config.Logger.Log(fmt.Sprintf(logReqMsg, r.ClientInfo.ServiceName, r.Operation.Name, string(body)))
+
 		return
 	}
 
